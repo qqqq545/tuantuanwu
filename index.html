@@ -73,6 +73,41 @@
   .bubble .who { display: block; margin-top: 3px; font-size: 11.5px; letter-spacing: .34em; color: #a37f3d; }
   .hint { margin-top: 12px; font-size: 11.5px; letter-spacing: .34em; color: rgba(207, 195, 171, .55); text-align: center; }
   .guest + .guest { margin-top: 18px; }
+
+  /* pet the cat */
+  .catspot {
+    position: absolute; left: 54%; top: 56%; width: 18%; height: 32%;
+    background: transparent; border: 0; cursor: pointer; z-index: 3; -webkit-tap-highlight-color: transparent;
+  }
+  .pawbadge {
+    position: absolute; right: 6%; top: 2%; width: 30px; height: 30px; border-radius: 50%;
+    background: rgba(12, 33, 43, .55); border: 1px solid rgba(201, 163, 95, .65);
+    display: flex; align-items: center; justify-content: center;
+    animation: pawpulse 2.6s ease-in-out infinite;
+  }
+  .pawbadge svg { width: 17px; height: 17px; fill: var(--gold-soft); }
+  @keyframes pawpulse { 0%,100% { transform: scale(1); opacity: .75; } 50% { transform: scale(1.14); opacity: 1; } }
+  .heart { position: absolute; z-index: 4; pointer-events: none; animation: rise 1.5s ease-out forwards; }
+  .heart svg { fill: #e5a3a3; filter: drop-shadow(0 2px 6px rgba(0,0,0,.35)); }
+  @keyframes rise { to { transform: translateY(-92px) rotate(14deg) scale(1.15); opacity: 0; } }
+
+  /* controls row */
+  .controls { margin-top: 16px; display: flex; justify-content: center; align-items: center; gap: 22px; flex-wrap: wrap; }
+  .lampbtn {
+    font: inherit; font-size: 12.5px; letter-spacing: .3em; text-indent: .3em;
+    color: var(--gold-soft); background: transparent; border: 1px solid rgba(201, 163, 95, .55);
+    padding: 9px 20px 9px 23px; border-radius: 999px; cursor: pointer; transition: all .3s ease;
+  }
+  .lampbtn:hover { background: rgba(201, 163, 95, .14); }
+  .petline { font-size: 12.5px; letter-spacing: .26em; color: rgba(207, 195, 171, .72); }
+  .petline b { color: var(--gold-soft); font-weight: 600; }
+
+  /* lights off */
+  body { transition: background 1s ease; }
+  .frame video { transition: filter 1s ease; }
+  body.lights-off { background: #061419; }
+  body.lights-off .frame video { filter: brightness(.48) saturate(.72); }
+  body.lights-off .frame { border-color: rgba(201, 163, 95, .28); }
   .caption {
     width: min(1060px, 94vw); margin: 14px auto 0;
     display: flex; justify-content: space-between;
@@ -167,8 +202,15 @@
       <img src="cabin.jpg" alt="雪夜里亮着暖光的小木屋，啦啦提着灯站在门廊上，橘猫团团蹲在她身边">
     </video>
     <div class="bubble serif" id="bubble"><span id="bubbleText"></span><span class="who" id="bubbleWho"></span></div>
+    <button class="catspot" id="catspot" aria-label="撸一撸团团">
+      <span class="pawbadge"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="15.5" rx="4.2" ry="3.4"/><ellipse cx="5.6" cy="10.5" rx="1.7" ry="2.2" transform="rotate(-18 5.6 10.5)"/><ellipse cx="9.2" cy="7.6" rx="1.8" ry="2.4" transform="rotate(-6 9.2 7.6)"/><ellipse cx="14.8" cy="7.6" rx="1.8" ry="2.4" transform="rotate(6 14.8 7.6)"/><ellipse cx="18.4" cy="10.5" rx="1.7" ry="2.2" transform="rotate(18 18.4 10.5)"/></svg></span>
+    </button>
   </figure>
   <div class="hint">点一点小屋 · 听听他们说什么</div>
+  <div class="controls">
+    <button class="lampbtn" id="lampBtn">熄灯看雪</button>
+    <span class="petline">团团已被撸 <b id="petCount">0</b> 次</span>
+  </div>
   <div class="caption">
     <span>冬 · 雪夜</span>
     <span class="hide-m">WATERCOLOUR · Nº 01</span>
@@ -296,13 +338,55 @@
         bubble = document.getElementById('bubble'),
         bText = document.getElementById('bubbleText'),
         bWho = document.getElementById('bubbleWho');
-    stage.addEventListener('click', function () {
-      var L = lines[li % lines.length]; li++;
-      bText.textContent = '「' + L[0] + '」';
-      bWho.textContent = '—— ' + L[1];
+    function say(text, who) {
+      bText.textContent = '「' + text + '」';
+      bWho.textContent = '—— ' + who;
       bubble.classList.add('show');
       clearTimeout(bt);
       bt = setTimeout(function () { bubble.classList.remove('show'); }, 3400);
+    }
+    stage.addEventListener('click', function () {
+      var L = lines[li % lines.length]; li++;
+      say(L[0], L[1]);
+    });
+
+    /* pet Tuantuan */
+    var pets = 0;
+    try { pets = parseInt(localStorage.getItem('tt_pets') || '0', 10) || 0; } catch (e) {}
+    var petCountEl = document.getElementById('petCount');
+    petCountEl.textContent = pets;
+    var petLines = ['呼噜呼噜……', '就这儿，挠挠下巴。', '嗯……再撸五分钟。', '耳朵后面也要。', '呼噜声是给你的回信。', '轻点，我要睡着了。'];
+    var milestones = { 10: '今日份的宠爱，达标了。', 30: '团团宣布：你是小屋的贵客。', 50: '肚皮……只给你看一下。', 100: '第一百下。团团把冬天都呼噜暖了。' };
+    document.getElementById('catspot').addEventListener('click', function (ev) {
+      ev.stopPropagation();
+      pets++;
+      petCountEl.textContent = pets;
+      try { localStorage.setItem('tt_pets', String(pets)); } catch (e) {}
+      say(milestones[pets] || petLines[Math.floor(Math.random() * petLines.length)], '团团');
+      var r = stage.getBoundingClientRect(),
+          x = (ev.clientX || (r.left + r.width * 0.63)) - r.left,
+          y = (ev.clientY || (r.top + r.height * 0.68)) - r.top;
+      for (var i = 0; i < 3; i++) {
+        var h = document.createElement('span');
+        h.className = 'heart';
+        var sz = 13 + Math.random() * 10;
+        h.style.left = (x - 8 + (Math.random() * 36 - 18)) + 'px';
+        h.style.top = (y - 10 - i * 7) + 'px';
+        h.style.animationDelay = (i * 0.13) + 's';
+        h.innerHTML = '<svg viewBox="0 0 24 24" width="' + sz + '" height="' + sz + '"><path d="M12 21s-8.2-5.6-8.2-11A4.6 4.6 0 0 1 12 6.6 4.6 4.6 0 0 1 20.2 10C20.2 15.4 12 21 12 21z"/></svg>';
+        stage.appendChild(h);
+        setTimeout((function (el) { return function () { el.remove(); }; })(h), 2100);
+      }
+    });
+
+    /* lamp toggle */
+    var lampBtn = document.getElementById('lampBtn'),
+        statusEl = document.querySelector('.status');
+    lampBtn.addEventListener('click', function () {
+      var off = document.body.classList.toggle('lights-off');
+      lampBtn.textContent = off ? '点灯迎客' : '熄灯看雪';
+      statusEl.innerHTML = off ? '<i></i>熄了灯 · 一起看雪' : '<i></i>团团在屋里 · 营业中';
+      if (off) say('灯熄了，雪就看得更清楚了。', '啦啦');
     });
 
     var io = new IntersectionObserver(function (es) {
