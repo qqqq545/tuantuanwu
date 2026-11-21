@@ -59,7 +59,20 @@
     background: rgba(244, 236, 219, .04);
     box-shadow: 0 40px 80px rgba(0, 0, 0, .45);
   }
-  .frame img { display: block; width: 100%; height: auto; }
+  .frame img, .frame video { display: block; width: 100%; height: auto; }
+  .frame { position: relative; cursor: pointer; }
+  .bubble {
+    position: absolute; left: 50%; bottom: 7%; transform: translate(-50%, 12px);
+    max-width: 86%; background: rgba(250, 245, 234, .96); color: #43331d;
+    padding: 13px 22px 11px; border: 1px solid rgba(201, 163, 95, .7);
+    box-shadow: 0 16px 34px rgba(0, 0, 0, .35);
+    font-size: clamp(14.5px, 2.4vw, 16.5px); letter-spacing: .14em; line-height: 1.7; text-align: center;
+    opacity: 0; pointer-events: none; transition: opacity .45s ease, transform .45s ease;
+  }
+  .bubble.show { opacity: 1; transform: translate(-50%, 0); }
+  .bubble .who { display: block; margin-top: 3px; font-size: 11.5px; letter-spacing: .34em; color: #a37f3d; }
+  .hint { margin-top: 12px; font-size: 11.5px; letter-spacing: .34em; color: rgba(207, 195, 171, .55); text-align: center; }
+  .guest + .guest { margin-top: 18px; }
   .caption {
     width: min(1060px, 94vw); margin: 14px auto 0;
     display: flex; justify-content: space-between;
@@ -148,9 +161,14 @@
   <div class="rule"></div>
   <p class="tagline">雪落的时候，小屋的灯就亮了</p>
 
-  <figure class="frame rv">
-    <img src="cabin.jpg" alt="雪夜里亮着暖光的小木屋，橘猫团团坐在门廊上">
+  <figure class="frame rv" id="stage" title="点一点小屋">
+    <video autoplay muted loop playsinline poster="cabin.jpg">
+      <source src="cabin.mp4" type="video/mp4">
+      <img src="cabin.jpg" alt="雪夜里亮着暖光的小木屋，啦啦提着灯站在门廊上，橘猫团团蹲在她身边">
+    </video>
+    <div class="bubble serif" id="bubble"><span id="bubbleText"></span><span class="who" id="bubbleWho"></span></div>
   </figure>
+  <div class="hint">点一点小屋 · 听听他们说什么</div>
   <div class="caption">
     <span>冬 · 雪夜</span>
     <span class="hide-m">WATERCOLOUR · Nº 01</span>
@@ -221,6 +239,20 @@
       </div>
       <div class="right" role="img" aria-label="团团的小屋雪夜图"></div>
     </div>
+    <div class="guest">
+      <div class="right" role="img" aria-label="啦啦提着灯站在小屋门廊上" style="background-position: 76% 66%;"></div>
+      <div class="left">
+        <div class="kicker">RESIDENT · Nº 002</div>
+        <h3 class="serif">艾啦啦</h3>
+        <div class="role">掌灯人 · 添柴看火的</div>
+        <dl>
+          <dt>入住</dt><dd>和团团一起，四季常驻</dd>
+          <dt>衣着</dt><dd>米白毛衣 · 红围巾</dd>
+          <dt>公务</dt><dd>点灯、添柴、热茶，等晚归的人</dd>
+          <dt>喜好</dt><dd>雪夜、炉火，和团团一起看雪落下</dd>
+        </dl>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -249,6 +281,29 @@
               'px;animation-duration:' + d + 's;animation-delay:' + dl + 's"></span>';
     }
     box.innerHTML = html;
+
+    var lines = [
+      ['雪下大了，进屋烤烤火吧。', '啦啦'],
+      ['呼噜……罐头，什么时候开？', '团团'],
+      ['灯我点好了，晚归的人看得见路。', '啦啦'],
+      ['窗边那个位置，是我的。', '团团'],
+      ['茶热好了，慢慢喝，雪慢慢下。', '啦啦'],
+      ['今天也辛苦了，陪你坐一会儿。', '团团'],
+      ['柴添满了，今晚的火不会熄。', '啦啦'],
+      ['别光看雪，看我。', '团团']
+    ], li = Math.floor(Math.random() * lines.length), bt = null;
+    var stage = document.getElementById('stage'),
+        bubble = document.getElementById('bubble'),
+        bText = document.getElementById('bubbleText'),
+        bWho = document.getElementById('bubbleWho');
+    stage.addEventListener('click', function () {
+      var L = lines[li % lines.length]; li++;
+      bText.textContent = '「' + L[0] + '」';
+      bWho.textContent = '—— ' + L[1];
+      bubble.classList.add('show');
+      clearTimeout(bt);
+      bt = setTimeout(function () { bubble.classList.remove('show'); }, 3400);
+    });
 
     var io = new IntersectionObserver(function (es) {
       es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('on'); io.unobserve(e.target); } });
