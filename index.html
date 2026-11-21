@@ -61,31 +61,9 @@
   }
   .frame img, .frame video { display: block; width: 100%; height: auto; }
 
-  /* living painting scene */
-  .scene { position: relative; overflow: hidden; aspect-ratio: 3 / 2; background: #0a1c26; }
-  .scene .layer { position: absolute; inset: -3.5%; will-change: transform; }
-  .scene-img { width: 100%; height: 100%; object-fit: cover; display: block; animation: kb 42s ease-in-out infinite alternate; transition: filter 1s ease; }
-  @keyframes kb { from { transform: scale(1.03) translate(0, 0); } to { transform: scale(1.12) translate(-1.2%, -1.6%); } }
-  .glow { position: absolute; border-radius: 50%; mix-blend-mode: screen; pointer-events: none;
-    background: radial-gradient(circle, rgba(255, 186, 92, .85) 0%, rgba(255, 150, 60, .35) 42%, rgba(255, 140, 50, 0) 70%);
-    filter: blur(6px); animation: flick 3.4s ease-in-out infinite alternate; transition: opacity 1s ease; }
-  .g1 { left: 30.5%; top: 54%; width: 11%; height: 17%; }
-  .g2 { left: 43.5%; top: 53%; width: 12%; height: 18%; animation-delay: -1.3s; }
-  .g3 { left: 52%; top: 54%; width: 9%; height: 16%; animation-delay: -2.2s; }
-  .g4 { left: 61%; top: 63%; width: 13%; height: 16%; animation-delay: -.6s; }
-  @keyframes flick { from { opacity: .55; transform: scale(1); } to { opacity: .95; transform: scale(1.07); } }
-  .smoke { position: absolute; left: 38.2%; top: 5%; width: 9%; height: 27%; pointer-events: none; }
-  .smoke span { position: absolute; bottom: 0; left: 50%; width: 34%; padding-top: 34%; border-radius: 50%;
-    background: radial-gradient(circle, rgba(235, 240, 245, .5), rgba(235, 240, 245, 0) 70%); filter: blur(5px);
-    opacity: 0; animation: rise2 7.5s linear infinite; }
-  .smoke span:nth-child(2) { animation-delay: 2.5s; }
-  .smoke span:nth-child(3) { animation-delay: 5s; }
-  @keyframes rise2 { 0% { transform: translate(-50%, 10%) scale(.5); opacity: 0; } 18% { opacity: .55; } 100% { transform: translate(35%, -190%) scale(1.55); opacity: 0; } }
-  #snowCanvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
-  .vignette { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(120% 92% at 50% 42%, transparent 56%, rgba(4, 12, 17, .38) 100%); }
-  body.lights-off .scene-img { filter: brightness(.5) saturate(.72); }
-  body.lights-off .glow { opacity: .05 !important; animation: none; }
-  @media (prefers-reduced-motion: reduce) { .scene-img, .glow, .smoke span { animation: none !important; } }
+  /* hero film */
+  .hero-video { transition: filter 1s ease; background: #0a1c26; }
+  body.lights-off .hero-video { filter: brightness(.5) saturate(.72); }
   .frame { position: relative; cursor: pointer; }
   .bubble {
     position: absolute; left: 50%; bottom: 7%; transform: translate(-50%, 12px);
@@ -221,17 +199,10 @@
   <p class="tagline">雪落的时候，小屋的灯就亮了</p>
 
   <figure class="frame rv" id="stage" title="点一点小屋">
-    <div class="scene" id="scene">
-      <div class="layer" id="layerBase">
-        <img class="scene-img" src="cabin.jpg" alt="雪夜里亮着暖光的小木屋，啦啦提着灯站在门廊上，橘猫团团蹲在她身边">
-      </div>
-      <div class="layer" id="layerMid">
-        <div class="glow g1"></div><div class="glow g2"></div><div class="glow g3"></div><div class="glow g4"></div>
-        <div class="smoke"><span></span><span></span><span></span></div>
-      </div>
-      <canvas id="snowCanvas"></canvas>
-      <div class="vignette"></div>
-    </div>
+    <video class="hero-video" autoplay muted loop playsinline poster="cabin.jpg">
+      <source src="cabin-hero.mp4" type="video/mp4">
+      <img src="cabin.jpg" alt="雪夜里亮着暖光的小木屋，啦啦提着灯站在门廊上，橘猫团团蹲在她身边">
+    </video>
     <div class="bubble serif" id="bubble"><span id="bubbleText"></span><span class="who" id="bubbleWho"></span></div>
     <button class="catspot" id="catspot" aria-label="撸一撸团团">
       <span class="pawbadge"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="15.5" rx="4.2" ry="3.4"/><ellipse cx="5.6" cy="10.5" rx="1.7" ry="2.2" transform="rotate(-18 5.6 10.5)"/><ellipse cx="9.2" cy="7.6" rx="1.8" ry="2.4" transform="rotate(-6 9.2 7.6)"/><ellipse cx="14.8" cy="7.6" rx="1.8" ry="2.4" transform="rotate(6 14.8 7.6)"/><ellipse cx="18.4" cy="10.5" rx="1.7" ry="2.2" transform="rotate(18 18.4 10.5)"/></svg></span>
@@ -288,22 +259,6 @@
         <p>屋主团团，毛色像炉火，脾气像阳光。巡视领地、验收罐头、陪客人看雪，是它的全部公务。</p>
       </div>
     </div>
-  </div>
-</section>
-
-<section>
-  <div class="inner rv">
-    <div class="sec-head">
-      <span class="sec-no serif">✦</span>
-      <h2 class="sec-title serif">小屋的一夜</h2>
-      <div class="sec-line"></div>
-    </div>
-    <figure class="frame">
-      <video controls preload="none" poster="cabin.jpg" playsinline>
-        <source src="cabin-night.mp4" type="video/mp4">
-      </video>
-    </figure>
-    <p style="text-align:center; color: var(--muted); font-size: 14.5px; letter-spacing: .14em; margin-top: 18px;">雪夜里的一分钟 · 添柴 · 看书 · 撸猫 · 熄灯</p>
   </div>
 </section>
 
@@ -435,56 +390,6 @@
       statusEl.innerHTML = off ? '<i></i>熄了灯 · 一起看雪' : '<i></i>团团在屋里 · 营业中';
       if (off) say('灯熄了，雪就看得更清楚了。', '啦啦');
     });
-
-    /* living painting: parallax layers + depth snow */
-    (function () {
-      var scene = document.getElementById('scene'),
-          baseL = document.getElementById('layerBase'),
-          midL = document.getElementById('layerMid'),
-          cv = document.getElementById('snowCanvas'), ctx = cv.getContext('2d'),
-          flakes = [], px = 0, py = 0, tx = 0, ty = 0, t0 = 0, running = true,
-          reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      function size() {
-        var r = scene.getBoundingClientRect(), d = Math.min(window.devicePixelRatio || 1, 2);
-        cv.width = Math.max(2, Math.round(r.width * d));
-        cv.height = Math.max(2, Math.round(r.height * d));
-        flakes = [];
-        var n = Math.round(cv.width / 10);
-        for (var i = 0; i < n; i++) {
-          var dep = Math.random();
-          flakes.push({ x: Math.random() * cv.width, y: Math.random() * cv.height,
-            r: 0.8 + dep * 2.8, s: 0.3 + dep * 1.05, d: dep, ph: Math.random() * 6.283, sw: 0.25 + dep * 0.85 });
-        }
-      }
-      function draw(now) {
-        var t = now * 0.001;
-        px += (tx - px) * 0.045; py += (ty - py) * 0.045;
-        baseL.style.transform = 'translate(' + (px * -6) + 'px,' + (py * -4) + 'px)';
-        midL.style.transform = 'translate(' + (px * -12) + 'px,' + (py * -8) + 'px)';
-        ctx.clearRect(0, 0, cv.width, cv.height);
-        for (var i = 0; i < flakes.length; i++) {
-          var f = flakes[i];
-          f.y += f.s; f.x += Math.sin(t * 0.9 + f.ph) * f.sw * 0.4;
-          if (f.y > cv.height + 6) { f.y = -6; f.x = Math.random() * cv.width; }
-          if (f.x > cv.width + 6) f.x = -6; else if (f.x < -6) f.x = cv.width + 6;
-          ctx.beginPath();
-          ctx.arc(f.x + px * f.d * 30, f.y + py * f.d * 18, f.r, 0, 6.283);
-          ctx.fillStyle = 'rgba(255,255,255,' + (0.3 + f.d * 0.65) + ')';
-          ctx.fill();
-        }
-      }
-      function loop(now) { if (running) draw(now); requestAnimationFrame(loop); }
-      stage.addEventListener('pointermove', function (e) {
-        var r = scene.getBoundingClientRect();
-        tx = ((e.clientX - r.left) / r.width - 0.5) * 2;
-        ty = ((e.clientY - r.top) / r.height - 0.5) * 2;
-      });
-      stage.addEventListener('pointerleave', function () { tx = 0; ty = 0; });
-      new IntersectionObserver(function (es) { running = es[0].isIntersecting; }, { threshold: 0.02 }).observe(scene);
-      var rsz; window.addEventListener('resize', function () { clearTimeout(rsz); rsz = setTimeout(size, 180); });
-      size();
-      if (reduced) { draw(0); } else { requestAnimationFrame(loop); }
-    })();
 
     var io = new IntersectionObserver(function (es) {
       es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('on'); io.unobserve(e.target); } });
