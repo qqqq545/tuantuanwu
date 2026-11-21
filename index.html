@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>团团的小屋</title>
+<meta name="description" content="一间开在雪地里的小屋，住着一只叫团团的橘猫。">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+    background: linear-gradient(180deg, #fdf6ec 0%, #f7e8d8 55%, #f3ddc9 100%);
+    color: #5b4636;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+  }
+  .wrap { width: min(680px, 92vw); padding: 48px 0 40px; text-align: center; position: relative; z-index: 2; }
+  h1 {
+    font-family: "Songti SC", "STSong", "Noto Serif SC", serif;
+    font-size: clamp(34px, 7vw, 46px);
+    letter-spacing: .35em;
+    text-indent: .35em;
+    color: #6d4c33;
+    font-weight: 600;
+  }
+  .sub { margin-top: 10px; font-size: 14px; letter-spacing: .5em; text-indent: .5em; color: #a98a6d; }
+  .scene { margin: 30px auto 6px; width: min(560px, 94vw); filter: drop-shadow(0 18px 24px rgba(146, 102, 64, .18)); }
+  .lines { margin-top: 22px; font-size: 16px; line-height: 2.1; color: #75573f; }
+  .lines .dim { color: #b08e6d; font-size: 14px; }
+  .sign {
+    display: inline-block; margin-top: 26px; padding: 7px 20px;
+    border: 1.5px solid #d9b48c; border-radius: 999px;
+    font-size: 13px; letter-spacing: .3em; text-indent: .3em; color: #a4764e;
+    background: rgba(255, 252, 247, .65);
+  }
+  .sign i { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #e8a04c; margin-right: 9px; vertical-align: 1px; animation: glow 2.6s ease-in-out infinite; }
+  @keyframes glow { 0%,100% { opacity: .45; } 50% { opacity: 1; } }
+  footer { margin-top: auto; padding: 26px 0 30px; font-size: 12.5px; letter-spacing: .25em; color: #c2a180; position: relative; z-index: 2; }
+  .snow { position: fixed; inset: 0; pointer-events: none; z-index: 1; overflow: hidden; }
+  .snow span {
+    position: absolute; top: -4vh; border-radius: 50%;
+    background: #fff; opacity: .85;
+    animation: fall linear infinite;
+  }
+  @keyframes fall {
+    to { transform: translate3d(3vw, 108vh, 0); }
+  }
+  .smoke { animation: rise 5s ease-in-out infinite; opacity: .55; }
+  .smoke.s2 { animation-delay: 1.6s; } .smoke.s3 { animation-delay: 3.2s; }
+  @keyframes rise { 0% { transform: translateY(0) scale(1); opacity: 0; } 25% { opacity: .55; } 100% { transform: translateY(-26px) scale(1.5); opacity: 0; } }
+  .lamp { animation: glow 3.4s ease-in-out infinite; }
+</style>
+</head>
+<body>
+<div class="snow" id="snow"></div>
+
+<div class="wrap">
+  <h1>团团的小屋</h1>
+  <div class="sub">T U A N T U A N &nbsp; C A B I N</div>
+
+  <svg class="scene" viewBox="0 0 560 380" role="img" aria-label="雪地里的小木屋和橘猫团团">
+    <!-- sky wash -->
+    <rect x="0" y="0" width="560" height="380" rx="26" fill="#fdf9f2"/>
+    <circle cx="472" cy="66" r="30" fill="#f6cf8e" opacity=".8"/>
+    <circle cx="472" cy="66" r="44" fill="#f6cf8e" opacity=".25"/>
+    <!-- far pines -->
+    <g fill="#b7c9b4">
+      <path d="M52 238 l20 -58 l20 58 z"/><path d="M60 208 l12 -34 l12 34 z"/>
+      <path d="M452 244 l22 -64 l22 64 z"/><path d="M461 212 l13 -38 l13 38 z"/>
+      <path d="M404 250 l16 -46 l16 46 z"/>
+    </g>
+    <!-- snow ground -->
+    <path d="M0 292 Q140 268 290 288 T560 284 V380 H0 Z" fill="#fdfdfa"/>
+    <path d="M0 316 Q180 296 340 312 T560 308 V380 H0 Z" fill="#f4efe4"/>
+    <!-- cabin -->
+    <g>
+      <rect x="212" y="196" width="150" height="104" rx="6" fill="#a9744f"/>
+      <rect x="212" y="196" width="150" height="104" rx="6" fill="url(#wood)"/>
+      <path d="M196 202 L287 138 L378 202 L362 202 L287 152 L212 202 Z" fill="#7c4f30"/>
+      <rect x="192" y="196" width="190" height="12" rx="6" fill="#8a5a38"/>
+      <!-- chimney + smoke -->
+      <rect x="322" y="146" width="20" height="34" fill="#96684a"/>
+      <g fill="#d9d4cc">
+        <circle class="smoke" cx="332" cy="136" r="7"/>
+        <circle class="smoke s2" cx="336" cy="128" r="9"/>
+        <circle class="smoke s3" cx="330" cy="120" r="11"/>
+      </g>
+      <!-- window with warm light -->
+      <rect x="238" y="226" width="42" height="42" rx="5" fill="#ffd98f" class="lamp"/>
+      <rect x="238" y="226" width="42" height="42" rx="5" fill="none" stroke="#7c4f30" stroke-width="4"/>
+      <line x1="259" y1="226" x2="259" y2="268" stroke="#7c4f30" stroke-width="3"/>
+      <line x1="238" y1="247" x2="280" y2="247" stroke="#7c4f30" stroke-width="3"/>
+      <!-- door -->
+      <rect x="306" y="222" width="36" height="78" rx="5" fill="#7c4f30"/>
+      <circle cx="334" cy="262" r="3.4" fill="#f2c879"/>
+      <!-- porch step -->
+      <rect x="298" y="298" width="52" height="7" rx="3" fill="#8a5a38"/>
+    </g>
+    <!-- path in snow -->
+    <path d="M318 306 q6 22 -4 44 M306 306 q-2 20 2 40" stroke="#e7dcc8" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <!-- Tuantuan the orange cat, sitting by the door -->
+    <g>
+      <ellipse cx="392" cy="298" rx="17" ry="7" fill="#efe6d4"/>
+      <path d="M378 296 q-4 -26 12 -30 q17 -3 19 14 q1 12 -6 18 q-14 5 -25 -2z" fill="#eda54e"/>
+      <circle cx="394" cy="258" r="13" fill="#f2b25c"/>
+      <path d="M384 250 l-3 -11 l10 6z" fill="#f2b25c"/>
+      <path d="M404 250 l3 -11 l-10 6z" fill="#f2b25c"/>
+      <path d="M386 249 l-1.4 -6.4 l5.4 3.4z" fill="#e58e63"/>
+      <path d="M402 249 l1.4 -6.4 l-5.4 3.4z" fill="#e58e63"/>
+      <circle cx="389.5" cy="258" r="1.7" fill="#5b4636"/>
+      <circle cx="398.5" cy="258" r="1.7" fill="#5b4636"/>
+      <path d="M392 262 q2 1.8 4 0" stroke="#5b4636" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+      <path d="M410 292 q16 2 13 -10" stroke="#eda54e" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <path d="M382 278 q10 3 20 0" stroke="#e08f3a" stroke-width="3" fill="none" opacity=".6"/>
+    </g>
+    <!-- near pine with snow -->
+    <g>
+      <path d="M96 300 l26 -84 l26 84z" fill="#8fae94"/>
+      <path d="M104 252 q18 -10 36 0 q-18 8 -36 0z" fill="#fdfdfa"/>
+      <path d="M110 226 q12 -8 24 0 q-12 7 -24 0z" fill="#fdfdfa"/>
+      <rect x="118" y="298" width="8" height="14" fill="#7c4f30"/>
+    </g>
+    <defs>
+      <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#ffffff" stop-opacity=".08"/>
+        <stop offset="1" stop-color="#000000" stop-opacity=".10"/>
+      </linearGradient>
+    </defs>
+  </svg>
+
+  <div class="lines">
+    一间开在雪地里的小屋，住着一只叫团团的橘猫。<br>
+    屋里有暖黄的灯，窗外有慢慢落的雪。<br>
+    <span class="dim">推门进来，烤烤火，看看雪，什么都不用想。</span>
+  </div>
+
+  <div class="sign"><i></i>团团在屋里 · 营业中</div>
+</div>
+
+<footer>团团的小屋 · 二〇二六年冬</footer>
+
+<script>
+  (function () {
+    var box = document.getElementById('snow'), n = 42, html = '';
+    for (var i = 0; i < n; i++) {
+      var size = (Math.random() * 4 + 2).toFixed(1),
+          left = (Math.random() * 100).toFixed(2),
+          dur = (Math.random() * 9 + 8).toFixed(1),
+          delay = (-Math.random() * 14).toFixed(1);
+      html += '<span style="left:' + left + '%;width:' + size + 'px;height:' + size +
+              'px;animation-duration:' + dur + 's;animation-delay:' + delay + 's"></span>';
+    }
+    box.innerHTML = html;
+  })();
+</script>
+</body>
+</html>
